@@ -170,7 +170,9 @@ bruteforcing the password using hydra but authentication not enabled on the serv
  5432/tcp open  postgresql  PostgreSQL DB 8.3.0 - 8.3.7
 ---
  
-
+searching the MSF i found a module for remote shell 
+ 
+ 
  
  
  
