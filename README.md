@@ -12,7 +12,9 @@ sudo apt isntall exploitdb
 
 scan the target using nmap 
 --
-Nmap -sV -Sc <machine ip>  get 12 open ports 21 -22-23-25-53-80-139-445-3306-5430-8009
+Nmap -sV -Sc 192.168.1.9
+
+get 12 open ports (21 -22-23-25-53-80-139-445-3306-5430-8009)
  
   
 now lets walkthough each port and see what we can do (sepratly and combined ):
